@@ -118,14 +118,14 @@ mymainmenu = awful.menu({ items = {
 
 -- {{{ Separators
 sep = widget({ type = "textbox" })
-sep.text = "] [ "
+sep.text = "<span color=\"#336ec0\">」「 </span>"
 
 r_end = widget({ type = "textbox" })
-r_end.text = "] "
+r_end.text = "<span color=\"#336ec0\">」</span>"
 r_end.width = 150
 
 l_end = widget({ type = "textbox" })
-l_end.text = "[ "
+l_end.text = "<span color=\"#336ec0\">「 </span>"
 -- }}}
 
 -- {{{ System Tray
@@ -137,7 +137,7 @@ datewidget = awful.widget.textclock({ align = "right" }, "<span color=\"" .. bea
 datewidget_t = awful.tooltip({
     objects = {datewidget},
     timer_function = function()
-        return awful.util.pread("DJS=`date +%_d`; cal -m | sed -e \"1\!s/$DJS\\b/<span color=\\\"#aff73d\\\">$DJS<\\/span>/\""):gsub("^([^\n]+)\n", "<u>%1</u>\n", 1)
+        return awful.util.pread("DJS=`date +%_d`; cal -m | sed -e \"1\!s/$DJS\\b/<span color=\\\"#336ec0\\\">$DJS<\\/span>/\""):gsub("^([^\n]+)\n", "<u>%1</u>\n", 1)
     end
 })
 datewidget_t:set_timeout(60)
@@ -366,7 +366,7 @@ for s = 1, screen.count() do
     mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.label.all, mytaglist.buttons)
 
     -- Create the wibox
-    mywibox[s] = awful.wibox({ position = "top", screen = s, width = screen[s].geometry.width - 2, height = 13, border_width = 1, border_color = "#333333", fg = "#777777" })
+    mywibox[s] = awful.wibox({ position = "top", screen = s, width = screen[s].geometry.width - 2, height = 13, border_width = 1, border_color = "#222222", fg = "#777777" })
     if s == 1 then
         -- Add widgets to the wibox - order matters
         mywibox[s].widgets = {

@@ -9,20 +9,20 @@ theme = {}
 
 theme.font          = "snap 8"
 
-theme.bg_normal     = "#111111dd"
+theme.bg_normal     = "#121212"
 
 theme.bg_focus      = "#111111"
-theme.bg_urgent     = "#afd700"
+theme.bg_urgent     = "#336ec0"
 theme.bg_minimize   = "#111111"
 
 theme.fg_normal     = "#aaaaaa"
-theme.fg_focus      = "#afd700"
+theme.fg_focus      = "#336ec0"
 theme.fg_urgent     = "#850d0d"
 theme.fg_minimize   = "#555555"
 
 theme.border_width  = "1"
-theme.border_normal = "#333333"
-theme.border_focus  = "#444444"
+theme.border_normal = "#222222"
+theme.border_focus  = "#333333"
 theme.border_marked = "#91231c"
 
 -- There are other variable sets
