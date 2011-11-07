@@ -133,7 +133,7 @@ mysystray = widget({ type = "systray" })
 -- }}}
 
 -- {{{ Date
-datewidget = awful.widget.textclock({ align = "right" }, "<span color=\"" .. beautiful.fg_focus .. "\">%R %a[%d|%m|%y]</span> ")
+datewidget = awful.widget.textclock({ align = "right" }, "<span color=\"#bbbbbb\">%R %a[%d|%m|%y]</span> ")
 datewidget_t = awful.tooltip({
     objects = {datewidget},
     timer_function = function()
@@ -254,7 +254,7 @@ netwidget_t = awful.tooltip({
     timer_function = function()
         local essid = awful.util.pread("iwgetid --raw")
         if essid == "" then
-            return awful.util.escape(awful.util.pread("ip -o -f inet addr"))
+            return awful.util.escape(awful.util.pread("ip addr"))
         else
             return awful.util.escape("Wireless: " .. essid .. awful.util.pread("ip -o -f inet addr"))
         end
@@ -681,6 +681,9 @@ awful.rules.rules = {
        properties = { floating = true, ontop = true } },
     { rule = { title = "Download Manager" },
        properties = { floating = true, ontop = true } },
+    { rule = { class = "Eclipse", name="Commit" },
+       properties = { floating = false },
+       callback = awful.client.setslave },
     { rule = { class = "Pithos", name = "Pithos"},
       callback = awful.client.setslave
     },
