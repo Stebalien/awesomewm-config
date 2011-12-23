@@ -19,6 +19,8 @@ require("newsbeuter")
 require("mail")
 require("math")
 require("mpd")
+require("pianobar")
+require("music")
 require("wicd")
 -- }}}
 
@@ -133,7 +135,10 @@ mysystray = widget({ type = "systray" })
 -- }}}
 
 -- {{{ Date
-datewidget = awful.widget.textclock({ align = "right" }, "<span color=\"#bbbbbb\">%R %a[%d|%m|%y]</span> ")
+dot = "<span color=\"#555555\">.</span>"
+colon = "<span color=\"#555555\">:</span>"
+date_string = "%Y" .. dot .. "%m" .. dot .."%d<span color=\"#336ec0\">/</span><span color=\"#555555\">%a</span> %H"..colon.."%M "
+datewidget = awful.widget.textclock({ align = "right" }, date_string)
 datewidget_t = awful.tooltip({
     objects = {datewidget},
     timer_function = function()
@@ -155,7 +160,7 @@ memwidget_t = awful.tooltip({
     end
 })
 memwidget_t:set_timeout(10)
-vicious.register(memwidget, vicious.widgets.mem, "<span color=\"#bbbbbb\">$2</span>", 13)
+vicious.register(memwidget, vicious.widgets.mem, "$2", 13)
 -- }}}
 
 -- {{{ CPU
@@ -170,7 +175,7 @@ cpuwidget_t = awful.tooltip({
         return awful.util.escape(awful.util.pread("ps --cols 100 --sort -pcpu -e -o \"%cpu,rss,pid,command\" | head -20")):gsub("^([^\n]+)\n", "<u>%1</u>\n", 1)
     end
 })
-vicious.register(cpuwidget, vicious.widgets.cpu, "<span color=\"#bbbbbb\">$1</span>", 2)
+vicious.register(cpuwidget, vicious.widgets.cpu, "$1", 2)
 -- }}}
 
 -- {{{ Temp
@@ -184,7 +189,7 @@ tempwidget_t = awful.tooltip({
         return awful.util.pread("acpi -tf")
     end
 })
-vicious.register(tempwidget, vicious.widgets.thermal, "<span color=\"#bbbbbb\">$1</span>", 17, "thermal_zone0")
+vicious.register(tempwidget, vicious.widgets.thermal, "$1", 17, "thermal_zone0")
 -- }}}
 
 -- {{{ Volume
@@ -212,7 +217,7 @@ volwidget:buttons(awful.util.table.join(
                             vicious.force({volwidget})
                         end)
                         ))
-vicious.register(volwidget, vicious.widgets.volume, "<span color=\"#bbbbbb\">$1$2</span>", 67, "Master")
+vicious.register(volwidget, vicious.widgets.volume, "$1$2", 67, "Master")
 -- }}}
 
 -- {{{ Battery
@@ -226,7 +231,7 @@ batwidget_t = awful.tooltip({
         return awful.util.pread("acpi -b")
     end
 })
-vicious.register(batwidget, vicious.widgets.bat, "<span color=\"#bbbbbb\">$2$1</span>", 61, "BAT0")
+vicious.register(batwidget, vicious.widgets.bat, "$2$1", 61, "BAT0")
 -- }}}
 
 -- {{{ Drives
@@ -240,13 +245,14 @@ fswidget_t = awful.tooltip({
         return awful.util.escape(awful.util.pread("df -lh -x tmpfs -x devtmpfs -x rootfs")):gsub("^([^\n]+)\n", "<u>%1</u>\n", 1)
     end
 })
-vicious.register(fswidget, vicious.widgets.fs, "<span color=\"#bbbbbb\">${/ used_p}</span>r <span color=\"#bbbbbb\">${" .. home_dir .. " used_p}</span>h <span color=\"#bbbbbb\">${/var used_p}</span>v", 59, "BAT0")
+vicious.register(fswidget, vicious.widgets.fs, "${/ used_p}<span color=\"#555\">r</span> ${" .. home_dir .. " used_p}<span color=\"#555\">h</span> ${/var used_p}<span color=\"#555\">v</span>", 59, "BAT0")
 -- }}}
 
 -- {{{Net
 netwidget = widget({ type = "textbox" })
 netwidget.bg_image = image(beautiful.icons.net_wired)
 netwidget:margin({left = 10, right = 6})
+netwidget.width = 90
 netwidget.bg_align = "middle"
 netwidget:buttons(awful.util.table.join(awful.button({ }, 3, wicd.toggle)))
 netwidget_t = awful.tooltip({
@@ -262,7 +268,7 @@ netwidget_t = awful.tooltip({
 })
 vicious.register(netwidget, vicious.widgets.net,
   function (widget, args)
-      return string.format("<span color=\"#bbbbbb\">% 4d</span>u <span color=\"#bbbbbb\">% 5d</span>d", args["{eth0 up_kb}"] + args["{wlan0 up_kb}"], args["{eth0 down_kb}"] + args["{wlan0 down_kb}"])
+      return string.format("% 4d<span color=\"#555\">u </span>% 5d<span color=\"#555\">d</span>", args["{eth0 up_kb}"] + args["{wlan0 up_kb}"], args["{eth0 down_kb}"] + args["{wlan0 down_kb}"])
   end, 3)
 -- }}}
 
@@ -291,7 +297,7 @@ mailwidget_t = awful.tooltip({
     end
 })
 mailwidget_t:set_timeout(60)
-vicious.register(mailwidget, mail.widget, "<span color=\"#bbbbbb\">$1</span>", 11)
+vicious.register(mailwidget, mail.widget, "$1", 11)
 -- }}}
 
 -- {{{ Weather
@@ -305,7 +311,7 @@ weatherwidget:buttons(awful.util.table.join(
                         end
                         )))
 
-vicious.register(weatherwidget, vicious.widgets.weather, "<span color=\"#bbbbbb\">${tempf}</span>", 600, "KBOS")
+vicious.register(weatherwidget, vicious.widgets.weather, "${tempf}", 600, "KBOS")
 -- }}}
 
 -- {{{ News
@@ -330,12 +336,17 @@ newswidget_t = awful.tooltip({
         end
     end
 })
-vicious.register(newswidget, newsbeuter.widget, "<span color=\"#bbbbbb\">$1</span>", 11)
+vicious.register(newswidget, newsbeuter.widget, "$1", 11)
 -- }}}
 
 -- {{{ MPD
-mpdwidget = mpd.widget("<span color=\"#bbbbbb\">{Artist} - {Title}</span>", { pause = image(beautiful.icons.pause), play = image(beautiful.icons.play)})
-mpdwidget.width = 200
+musicwidget = music.widget("{artist} - {title}",
+                           "<u>Music - {state}</u>\n Title: {title}\n Artist: {artist}\n Album: {album}",
+                       {
+                           pause = image(beautiful.icons.pause),
+                           play = image(beautiful.icons.play)
+                       })
+musicwidget.width = 200
 -- }}}
 
 
@@ -366,7 +377,7 @@ for s = 1, screen.count() do
     mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.label.all, mytaglist.buttons)
 
     -- Create the wibox
-    mywibox[s] = awful.wibox({ position = "top", screen = s, width = screen[s].geometry.width - 2, height = 13, border_width = 1, border_color = "#222222", fg = "#777777" })
+    mywibox[s] = awful.wibox({ position = "top", screen = s, width = screen[s].geometry.width - 2, height = 13, border_width = 1, border_color = "#222222", fg = "#999999" })
     if s == 1 then
         -- Add widgets to the wibox - order matters
         mywibox[s].widgets = {
@@ -378,7 +389,7 @@ for s = 1, screen.count() do
             mysystray,
             datewidget,
             r_end,
-            mpdwidget,
+            musicwidget,
             sep,
             weatherwidget,
             sep,
@@ -461,19 +472,19 @@ globalkeys = awful.util.table.join(
 
     -- Pause/Play
     awful.key({}, "#172", function ()
-        mpd.toggle()
+        music.toggle()
     end),
     -- Remove Song
     awful.key({}, "#174", function ()
-        mpd.remove()
+        music.remove()
     end),
     -- Prev
     awful.key({}, "#173", function ()
-        mpd.prev()
+        music.prev()
     end),
     -- Next
     awful.key({}, "#171", function ()
-        mpd.next()
+        music.next()
     end),
 
     -- Volume
@@ -500,8 +511,12 @@ globalkeys = awful.util.table.join(
     -- System
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
+    awful.key({ modkey,           }, "p",   awful.tag.viewprev       ),
+    awful.key({ modkey,           }, "n",  awful.tag.viewnext       ),
     awful.key({ "Control", "Mod1" }, "Left",   awful.tag.viewprev       ),
     awful.key({ "Control", "Mod1" }, "Right",  awful.tag.viewnext       ),
+    awful.key({                   }, "G5",   awful.tag.viewprev       ),
+    awful.key({                   }, "G6",  awful.tag.viewnext       ),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
 
     awful.key({ modkey,           }, "j",
@@ -543,7 +558,7 @@ globalkeys = awful.util.table.join(
     -- Standard program
     awful.key({ "Control" },         "`", function () awful.util.spawn(terminal) end),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
-    --awful.key({ modkey, "Shift"   }, "q", awesome.quit),
+    awful.key({ modkey, "Shift"   }, "q", function() awful.util.spawn("dmenu-tools power") end),
 
     awful.key({ modkey,           }, "l", function () awful.tag.incmwfact( 0.05)    end),
     awful.key({ modkey,           }, "h", function () awful.tag.incmwfact(-0.05)    end),
@@ -654,7 +669,7 @@ awful.rules.rules = {
     { rule = { },
       properties = { border_width = beautiful.border_width,
                      border_color = beautiful.border_normal,
-                     focus = true,
+                     focus = false,
                      maximized_vertical = false,
                      maximized_horizontal = false,
                      minimized = false,
@@ -663,22 +678,20 @@ awful.rules.rules = {
     { rule = { class = "MPlayer" },
       properties = { floating = true } },
     { rule = { type = "dialog" },
-      properties = { opacity = 0.95 } },
+      properties = { opacity = 0.95, focus = true } },
     { rule = { class = "pinentry" },
       properties = { floating = true } },
-    { rule = { class = "Firefox" },
-       properties = { focus = false } },
     { rule = { class = "Firefox", name="Downloads" },
        callback = awful.client.setslave },
     -- Preferences should float
     { rule = { name = "Preferences" },
-       properties = { floating = true } },
+       properties = { floating = true, focus = true } },
     { rule_any = { class = { "Qalculate-gtk", "Pidgin", "Oblogout" } },
        properties = { floating = true} },
     { rule = { class = "URxvt" },
        properties = {size_hints_honor = false } },
     { rule = { name = "tilda" },
-       properties = { floating = true, ontop = true } },
+       properties = { floating = true, ontop = true, focus = true } },
     { rule = { title = "Download Manager" },
        properties = { floating = true, ontop = true } },
     { rule = { class = "Eclipse", name="Commit" },

@@ -1,9 +1,3 @@
----------------------------------------------------
--- Licensed under the GNU General Public License v2
---  * (c) 2010, Adrian C. <anrxc@sysphere.org>
----------------------------------------------------
-
--- {{{ Grab environment
 local socket = require("socket")
 local setmetatable = setmetatable
 local capi = { widget = widget,
@@ -15,7 +9,6 @@ local capi = { widget = widget,
                emit_signal = awesome.emit_signal,
                add_signal = awesome.add_signal }
 local coroutine = coroutine
--- }}}
 
 
 -- Mpd: provides Music Player Daemon information
@@ -26,8 +19,12 @@ host = "127.0.0.1"
 port = 6600
 password = nil
 
-mpd_state  = {}
-setmetatable(mpd_state, {__index = function() return "N/A" end})
+local state
+local reset = function()
+    state = {}
+    setmetatable(state, {__index = function() return "N/A" end})
+end
+reset()
 
 local clear = function(sock)
     local buffer
@@ -40,7 +37,7 @@ local clear = function(sock)
     return true
 end
 
-cmd = function(sock, command)
+local cmd = function(sock, command)
     if command then
         sock:send(command .. "\n")
     end
@@ -53,7 +50,7 @@ end
 
     
 
-local connect = function(sock)
+local connect = function()
     sock = socket.tcp()
     sock:settimeout(1)
     sock:connect(host, port)
@@ -68,11 +65,12 @@ local connect = function(sock)
     return sock
 end
 
+
 local refresh_co = function()
     s = connect()
     if s == nil then
-        mpd_state = {}
-        capi.emit_signal("mpd::update")
+        state = {}
+        capi.emit_signal("music::update")
         return
     end
     while true do
@@ -83,18 +81,18 @@ local refresh_co = function()
             if err == "timeout" then
                 coroutine.yield()
             elseif not buffer then
-                mpd_state = {}
-                capi.emit_signal("mpd::update")
+                state = {}
+                capi.emit_signal("music::update")
                 return
             elseif buffer:sub(0,2) == "OK" then
                 break
             else
                 for k, v in buffer:gmatch("([%w]+):[%s](.*)$") do
-                    mpd_state[k] = capi.escape(v)
+                    state[k:lower()] = capi.escape(v)
                 end
             end
         end
-        capi.emit_signal("mpd::update")
+        capi.emit_signal("music::update")
 
         s:settimeout(0)
         s:send("idle player\n")
@@ -103,8 +101,8 @@ local refresh_co = function()
             if err == "timeout" then
                 coroutine.yield()
             elseif not buffer then
-                mpd_state = {}
-                capi.emit_signal("mpd::update")
+                state = {}
+                capi.emit_signal("music::update")
                 return
             end
         until buffer and buffer:sub(0,2) == "OK"
@@ -114,66 +112,29 @@ end
 
 -- Default watcher to return false
 local watcher = nil
+local timer = capi.timer({timeout = 5})
 
-refresh = function()
+local refresh = function()
     if not watcher or not coroutine.resume(watcher) then
         watcher = coroutine.create(refresh_co)
     end
 end
-
-local timer = capi.timer({timeout = 5})
 timer:add_signal("timeout", refresh)
 
--- {{{ MPD widget type
-
-get = function(item) return mpd_state[item] end
-
-widget = function(format, icon)
-    local w = {
-        icon = icon,
-        format = format,
-        widget = capi.widget({type = "textbox"})
-    }
-    if w.icon then
-        w.widget.bg_image = w.icon.pause
-        w.widget:margin({left = 10, right = 6})
-        w.widget.bg_align = "middle"
-    else
-        w.widget:margin({right = 6})
-    end
-    
-    w.widget:buttons(capi.join(
-        capi.button({ }, 1, function () toggle() end),
-        capi.button({ }, 3, function () next() end),
-        capi.button({ }, 4, function () prev() end)
-    ))
-    w.tooltip = capi.tooltip({
-        objects = {w.widget},
-        timeout = 0
-    })
-
-    local update = function()
-        w.widget.text = info(w.format)
-        w.tooltip:set_text(
-            info("<u>MPD - {state}</u>\n Title: {Title}\n Artist: {Artist}\n Album: {Album}")
-        )
-        if w.icon then
-            if mpd_state["state"] == "play" then
-                w.widget.bg_image = w.icon.play
-            else
-                w.widget.bg_image = w.icon.pause
-            end
-        end
-    end
-    capi.add_signal("mpd::update", update)
-    update()
-    if not timer.started then
-        timer:start()
-    end
-    return w.widget
+start = function()
+    reset()
+    timer:start()
+    capi.emit_signal("music::update")
 end
 
-    
+stop = function()
+    timer:stop()
+    pause()
+end
+
+
+-- {{{ Actions
+
 next = function()
     local s = connect()
     if not s then return end
@@ -194,7 +155,7 @@ toggle = function()
     local s = connect()
     if not s then return end
     refresh()
-    if mpd_state["state"] == "play" then
+    if state["state"] == "play" then
         cmd(s, "pause 1")
     else
         cmd(s, "pause 0")
@@ -227,8 +188,12 @@ remove = function()
     refresh()
 end
 
-info = function(format)
-    return format:gsub("{(%w+)}", get)
+get = function(item)
+    return state[item]
+end
+
+isPlaying = function()
+    return state["state"] == "play"
 end
     
     
