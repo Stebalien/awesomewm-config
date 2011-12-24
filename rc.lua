@@ -137,12 +137,13 @@ mysystray = widget({ type = "systray" })
 -- {{{ Date
 dot = "<span color=\"#555555\">.</span>"
 colon = "<span color=\"#555555\">:</span>"
-date_string = "%Y" .. dot .. "%m" .. dot .."%d<span color=\"#336ec0\">/</span><span color=\"#555555\">%a</span> %H"..colon.."%M "
+cal_script = config_dir .. "/cal.sh"
+date_string = "%Y" .. dot .. "%m" .. dot .."<span color=\"#dddddd\">%d</span><span color=\"#336ec0\">/</span><span color=\"#666666\">%a</span> <span color=\"#dddddd\">%H"..colon.."%M</span> "
 datewidget = awful.widget.textclock({ align = "right" }, date_string)
 datewidget_t = awful.tooltip({
     objects = {datewidget},
     timer_function = function()
-        return awful.util.pread("DJS=`date +%_d`; cal -m | sed -e \"1\!s/$DJS\\b/<span color=\\\"#336ec0\\\">$DJS<\\/span>/\""):gsub("^([^\n]+)\n", "<u>%1</u>\n", 1)
+        return awful.util.pread(cal_script)
     end
 })
 datewidget_t:set_timeout(60)
