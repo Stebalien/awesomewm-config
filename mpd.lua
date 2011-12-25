@@ -172,7 +172,7 @@ play = function()
     refresh()
 end
 
-play = function()
+pause = function()
     local s = connect()
     if not s then return end
     cmd(s, "pause 1")

@@ -670,7 +670,7 @@ awful.rules.rules = {
     { rule = { },
       properties = { border_width = beautiful.border_width,
                      border_color = beautiful.border_normal,
-                     focus = false,
+                     focus = true,
                      maximized_vertical = false,
                      maximized_horizontal = false,
                      minimized = false,
