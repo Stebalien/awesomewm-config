@@ -21,7 +21,7 @@ require("math")
 require("mpd")
 require("pianobar")
 require("music")
-require("wicd")
+--require("wicd")
 -- }}}
 
 -- {{{ Variable definitions
@@ -255,7 +255,7 @@ netwidget.bg_image = image(beautiful.icons.net_wired)
 netwidget:margin({left = 10, right = 6})
 netwidget.width = 90
 netwidget.bg_align = "middle"
-netwidget:buttons(awful.util.table.join(awful.button({ }, 3, wicd.toggle)))
+--netwidget:buttons(awful.util.table.join(awful.button({ }, 3, wicd.toggle)))
 netwidget_t = awful.tooltip({
     objects = {netwidget},
     timer_function = function()
@@ -425,7 +425,7 @@ end
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
     awful.button({ }, 1, function () mymainmenu:hide() end),
-    awful.button({ }, 2, function () wicd.toggle() end),
+    --awful.button({ }, 2, function () wicd.toggle() end),
     awful.button({ }, 3, function () mymainmenu:toggle() end),
     awful.button({ }, 4, awful.tag.viewnext),
     awful.button({ }, 5, awful.tag.viewprev)
@@ -440,7 +440,7 @@ globalkeys = awful.util.table.join(
     awful.key({"Control", "Shift"}, "Escape", function () awful.util.spawn("term -e htop") end), -- Procs
     awful.key({ modkey }, "Up", revelation.revelation), -- Revelation
     awful.key({ "Control", "Mod1" }, "Up", revelation.revelation), -- Revelation
-    awful.key({}, "XF86Launch1", function () wicd.scan() end), -- Refresh wireless network list
+    --awful.key({}, "XF86Launch1", function () wicd.scan() end), -- Refresh wireless network list
     awful.key({ modkey }, "d", function () awful.util.spawn("dict") end), -- Lookup selected words.
     awful.key({ modkey }, "Print", function ()
         naughty.notify({text = "Screenshot taken."})
