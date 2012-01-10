@@ -6,7 +6,7 @@ month=`date +%m`
 day=`date +%_d`
 
 case $month in
-    1)
+    01)
         pmonth=12
         nmonth=2
         pyear=$(($year-1))
