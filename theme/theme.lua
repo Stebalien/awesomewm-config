@@ -16,6 +16,8 @@ theme.bg_urgent     = "#336ec0"
 theme.bg_minimize   = "#111111"
 
 theme.fg_normal     = "#aaaaaa"
+theme.fg_highlight  = "#dddddd"
+theme.fg_faded      = "#555555"
 theme.fg_focus      = "#336ec0"
 theme.fg_urgent     = "#850d0d"
 theme.fg_minimize   = "#555555"

@@ -120,14 +120,14 @@ mymainmenu = awful.menu({ items = {
 
 -- {{{ Separators
 sep = widget({ type = "textbox" })
-sep.text = "<span color=\"#336ec0\">」「 </span>"
+sep.text = "<span color=\"" .. beautiful.fg_focus .. "\">」「 </span>"
 
 r_end = widget({ type = "textbox" })
-r_end.text = "<span color=\"#336ec0\">」</span>"
+r_end.text = "<span color=\"" .. beautiful.fg_focus .. "\">」</span>"
 r_end.width = 150
 
 l_end = widget({ type = "textbox" })
-l_end.text = "<span color=\"#336ec0\">「 </span>"
+l_end.text = "<span color=\"" .. beautiful.fg_focus .. "\">「 </span>"
 -- }}}
 
 -- {{{ System Tray
@@ -135,10 +135,10 @@ mysystray = widget({ type = "systray" })
 -- }}}
 
 -- {{{ Date
-dot = "<span color=\"#555555\">.</span>"
-colon = "<span color=\"#555555\">:</span>"
+dot = "<span color=\"" .. beautiful.fg_faded .. "\">.</span>"
+colon = "<span color=\"" .. beautiful.fg_faded .. "\">:</span>"
 cal_script = config_dir .. "/cal.sh"
-date_string = "%Y" .. dot .. "%m" .. dot .."<span color=\"#dddddd\">%d</span><span color=\"#336ec0\">/</span><span color=\"#666666\">%a</span> <span color=\"#dddddd\">%H"..colon.."%M</span> "
+date_string = "%Y" .. dot .. "%m" .. dot .."<span color=\"" .. beautiful.fg_highlight .. "\">%d</span><span color=\"" .. beautiful.fg_focus .. "\">/</span><span color=\"" .. beautiful.fg_faded .. "\">%a</span> <span color=\"" .. beautiful.fg_highlight .. "\">%H"..colon.."%M</span> "
 datewidget = awful.widget.textclock({ align = "right" }, date_string)
 datewidget_t = awful.tooltip({
     objects = {datewidget},
@@ -157,7 +157,7 @@ memwidget:margin({left = 10, right = 6})
 memwidget_t = awful.tooltip({
     objects = {memwidget},
     timer_function = function()
-        return awful.util.pread("free -m"):gsub("^([^\n]+)\n", "<u>%1</u>\n", 1)
+        return awful.util.pread("free -m"):gsub("^([^\n]+)\n", "<span color=\"" .. beautiful.fg_highlight .. "\">%1</span>\n", 1)
     end
 })
 memwidget_t:set_timeout(10)
@@ -173,7 +173,7 @@ cpuwidget:margin({left = 10, right = 6})
 cpuwidget_t = awful.tooltip({
     objects = {cpuwidget},
     timer_function = function()
-        return awful.util.escape(awful.util.pread("ps --cols 100 --sort -pcpu -e -o \"%cpu,rss,pid,command\" | head -20")):gsub("^([^\n]+)\n", "<u>%1</u>\n", 1)
+        return awful.util.escape(awful.util.pread("ps --cols 100 --sort -pcpu -e -o \"%cpu,rss,pid,command\" | head -20")):gsub("^([^\n]+)\n", "<span color=\"" .. beautiful.fg_highlight .. "\">%1</span>\n", 1)
     end
 })
 vicious.register(cpuwidget, vicious.widgets.cpu, "$1", 2)
@@ -243,10 +243,10 @@ fswidget.bg_align = "middle"
 fswidget_t = awful.tooltip({
     objects = {fswidget},
     timer_function = function()
-        return awful.util.escape(awful.util.pread("df -lh -x tmpfs -x devtmpfs -x rootfs")):gsub("^([^\n]+)\n", "<u>%1</u>\n", 1)
+        return awful.util.escape(awful.util.pread("df -lh -x tmpfs -x devtmpfs -x rootfs")):gsub("^([^\n]+)\n", "<span color=\"" .. beautiful.fg_highlight .. "\">%1</span>\n", 1)
     end
 })
-vicious.register(fswidget, vicious.widgets.fs, "${/ used_p}<span color=\"#555\">r</span> ${" .. home_dir .. " used_p}<span color=\"#555\">h</span> ${/var used_p}<span color=\"#555\">v</span>", 59, "BAT0")
+vicious.register(fswidget, vicious.widgets.fs, "${/ used_p}<span color=\"" .. beautiful.fg_faded .. "\">r</span> ${" .. home_dir .. " used_p}<span color=\"" .. beautiful.fg_faded .. "\">h</span> ${/var used_p}<span color=\"" .. beautiful.fg_faded .. "\">v</span>", 59, "BAT0")
 -- }}}
 
 -- {{{Net
@@ -269,7 +269,7 @@ netwidget_t = awful.tooltip({
 })
 vicious.register(netwidget, vicious.widgets.net,
   function (widget, args)
-      return string.format("% 4d<span color=\"#555\">u </span>% 5d<span color=\"#555\">d</span>", args["{eth0 up_kb}"] + args["{wlan0 up_kb}"], args["{eth0 down_kb}"] + args["{wlan0 down_kb}"])
+      return string.format("% 4d<span color=\"" .. beautiful.fg_faded .. "\">u </span>% 5d<span color=\"" .. beautiful.fg_faded .. "\">d</span>", args["{eth0 up_kb}"] + args["{wlan0 up_kb}"], args["{eth0 down_kb}"] + args["{wlan0 down_kb}"])
   end, 3)
 -- }}}
 
@@ -288,12 +288,12 @@ mailwidget_t = awful.tooltip({
     timer_function = function()
         local text = ""
         for i, m in mail.iter() do
-            text = text .. string.format("%s:\n  %s\n", m["from"], m["subject"])
+            text = text .. string.format("<span color=\"" .. beautiful.fg_highlight .. "\">%s</span>:\n    %s\n", awful.util.escape(m["from"]), awful.util.escape(m["subject"]))
         end
         if text == "" then
             return "No new mail."
         else
-            return awful.util.escape(text)
+            return text
         end
     end
 })
@@ -342,7 +342,7 @@ vicious.register(newswidget, newsbeuter.widget, "$1", 11)
 
 -- {{{ MPD
 musicwidget = music.widget("{artist} - {title}",
-                           "<u>Music - {state}</u>\n Title: {title}\n Artist: {artist}\n Album: {album}",
+                           "<span color=\"" .. beautiful.fg_highlight .. "\">Music - {state}</span>\n Title: {title}\n Artist: {artist}\n Album: {album}",
                        {
                            pause = image(beautiful.icons.pause),
                            play = image(beautiful.icons.play)
