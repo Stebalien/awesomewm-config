@@ -273,7 +273,7 @@ fswidget_t = awful.tooltip({
 vicious.register(fswidget, vicious.widgets.fs, "${/ used_p}<span color=\"" .. beautiful.fg_faded .. "\">r</span> ${" .. home_dir .. " used_p}<span color=\"" .. beautiful.fg_faded .. "\">h</span> ${/var used_p}<span color=\"" .. beautiful.fg_faded .. "\">v</span>", 59, "BAT0")
 -- }}}
 
--- {{{Net
+--[[ {{{Net
 netwidget = widget({ type = "textbox" })
 netwidget.bg_image = image(beautiful.icons.net_wired)
 netwidget:margin({left = 10, right = 6})
@@ -295,7 +295,7 @@ vicious.register(netwidget, vicious.widgets.net,
   function (widget, args)
       return string.format("% 4d<span color=\"" .. beautiful.fg_faded .. "\">u </span>% 5d<span color=\"" .. beautiful.fg_faded .. "\">d</span>", args["{eth0 up_kb}"] + args["{wlan0 up_kb}"], args["{eth0 down_kb}"] + args["{wlan0 down_kb}"])
   end, 3)
--- }}}
+-- }}} ]]
 
 -- {{{ Mail
 mailwidget = widget({ type = "textbox" })
@@ -422,8 +422,8 @@ for s = 1, screen.count() do
             mailwidget,
             sep,
             volwidget,
-            sep,
-            netwidget,
+            --sep,
+            --netwidget,
             sep,
             fswidget,
             sep,
