@@ -51,6 +51,7 @@ end
 -- {{{ Variable definitions
 -- This is used later as the default terminal and editor to run.
 terminal = os.getenv("TERMINAL") or "/usr/bin/urxvt"
+browser = os.getenv("BROWSER") or "/usr/bin/firefox"
 editor = os.getenv("EDITOR") or "vim"
 config_dir = awful.util.getdir("config")
 home_dir = os.getenv("HOME")
@@ -110,11 +111,11 @@ mysessionmenu = {
     { "shutdown", "xsession shutdown"}
 }
 mysystemmenu = {
-    { "io", "term -e iotop" },
-    { "network", "term -e sudo iftop" },
+    { "io", terminal .. " -e sudo iotop" },
+    { "network", terminal .. " -e sudo iftop" },
     { "printers", "xdg-open http://localhost:631"},
-    { "system", "term -e htop" },
-    { "volume", "term -e alsamixr" },
+    { "system", terminal .. " -e htop" },
+    { "volume", terminal .. " -e alsamixr" },
 }
 mysettingsmenu = {
     { "awesome", editor_cmd .. " " .. config_dir .. "/rc.lua"},
@@ -124,14 +125,13 @@ mysettingsmenu = {
 
 mymainmenu = awful.menu({ items = {
             { "WEB", nil},
-            { "  browser", "firefox" },
-            { "  mail", "term -e mutt" },
-            { "  irc", "term -e irssi" },
-            { "  news", "term -e newsbeuter" },
+            { "  browser", browser },
+            { "  mail", terminal .. " -e mutt" },
+            { "  irc", terminal .. " -e irssi" },
+            { "  news", terminal .. " -e newsbeuter" },
             { "TOOLS", nil},
-            { "  file", "pcmanfm -d" },
-            { "  music", "term -e ncmpcpp" },
-            { "  terminal", "term" },
+            { "  music", terminal .. " -e ncmpcpp" },
+            { "  terminal", terminal },
             { "preferences", mysettingsmenu },
             { "system", mysystemmenu },
             { "session", mysessionmenu },
