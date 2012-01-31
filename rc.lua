@@ -185,7 +185,7 @@ memwidget_t = awful.tooltip({
     end
 })
 memwidget_t:set_timeout(10)
-vicious.register(memwidget, vicious.widgets.mem, "$2", 13)
+vicious.register(memwidget, vicious.widgets.mem, "$1", 13)
 -- }}}
 
 -- {{{ CPU
