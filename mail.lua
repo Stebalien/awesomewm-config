@@ -1,3 +1,23 @@
+--[[
+To use this widget, change MAIL_DIR and register mail.widget with vicious. To
+reduce disk-io, this plugin will only update the unread mail count when files
+are created/moved/removed in the new mail directories under MAIL_DIR.
+
+    iter()      Returns an iterator that iterates over new mail and outputs the
+                current iteration and a table with each email's from address and
+                subject line.
+
+    count()     Returns the number of new messages.
+
+    widgit      The widgit worker function for vicious.
+
+    MAIL_DIR    The directory under which your maildirs live.
+                New mail folders must match this pattern:
+                MAIL_DIR/*/INBOX/new
+
+Licenced under the WTFPL.
+--]]
+
 -- {{{ imports
 local table = require "table"
 local string = require "string"
@@ -14,7 +34,6 @@ local patient = require("patient")
 module("mail")
 
 MAIL_DIR = os.getenv("HOME") .. "/.mail/"
-DECODER = "base64 -d"
 
 -- {{{ Setup
 local nmdirs = {}
@@ -112,14 +131,19 @@ end
 
 
 
-widget = function(format, warg)
+
+count = function()
     if not iwatch then
         iwatch = beginWatch()
         update_count()
     elseif iwatch:changed() then
         update_count()
     end
-    return {nmcount}
+    return nmcount
+end
+
+widget = function(format, warg)
+    return {count()}
 end
 
 -- vim: foldmethod=marker:filetype=lua

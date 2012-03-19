@@ -1,6 +1,30 @@
-local socket = require("socket")
+--[[
+A Music framework widget.
+
+Backends must provide:
+    play()  - Play the current song.
+    pause() - Pause the current song.
+    toggle()- Toggle the play status of the current song.
+    next()  - Skip to the next song (if possible).
+    prev()  - Go back to the previous song (if possible).
+    remove()- Remove the current song from the playlist (ban/rate low/delete
+              etc.).
+
+    start() - Called when the backend is started.
+    stop()  - Called when the backend is stopped.
+
+    get(key)- Takes a key (string) and returns metadata about the current song.
+              Keys must be lower case and title, author, album, and state are
+              required.
+
+Backends must emit music::upsate when state changes.
+
+Licenced under the WTFPL
+--]]
 local type = type
 local setmetatable = setmetatable
+local pairs = pairs
+local table = table
 local mpd = mpd
 local pianobar = pianobar
 
@@ -19,6 +43,12 @@ local coroutine = coroutine
 -- Mpd: provides Music Player Daemon information
 module("music")
 
+DEFAULT_BACKEND = mpd
+BACKENDS = {
+    ["mpd"] = mpd,
+    ["pianobar"] = pianobar
+}
+
 local backend = nil
 
 setBackend = function(b)
@@ -29,7 +59,7 @@ setBackend = function(b)
     backend.start()
 end
 
-setBackend(mpd)
+setBackend(DEFAULT_BACKEND)
 
 widget = function(widget_template, tooltip_template, icon)
     local w = {
@@ -45,11 +75,13 @@ widget = function(widget_template, tooltip_template, icon)
     else
         w.widget:margin({right = 6})
     end
-    
-    w.backend_menu = capi.menu({ items = {
-        {"mpd", function() setBackend(mpd) end},
-        {"pianobar", function() setBackend(pianobar) end}
-    }})
+
+    -- Populate the backends menu.
+    local menu_items = {}
+    for n, b in pairs(BACKENDS) do
+        table.insert(menu_items, {n, function() setBackend(b) end})
+    end
+    w.backend_menu = capi.menu{ items = menu_items }
 
     w.widget:buttons(capi.join(
         capi.button({ }, 1, function () toggle() end),

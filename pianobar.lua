@@ -3,9 +3,6 @@ local io = require("io")
 local getenv = os.getenv
 local emit_signal = awesome.emit_signal
 
-
-
--- Mpd: provides Music Player Daemon information
 module("pianobar")
 
 ctl_path = getenv("XDG_CONFIG_HOME") .. "/pianobar/ctl"

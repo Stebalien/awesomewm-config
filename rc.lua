@@ -144,14 +144,14 @@ mymainmenu = awful.menu({ items = {
 
 -- {{{ Separators
 sep = widget({ type = "textbox" })
-sep.text = "<span color=\"" .. beautiful.fg_focus .. "\">」「 </span>"
+sep.text = "<span color=\"" .. beautiful.border_focus .. "\">¦ </span>"
 
 r_end = widget({ type = "textbox" })
-r_end.text = "<span color=\"" .. beautiful.fg_focus .. "\">」</span>"
-r_end.width = 150
+r_end.text = "<span color=\"" .. beautiful.fg_faded .. "\"></span>"
+r_end.width = 5
 
 l_end = widget({ type = "textbox" })
-l_end.text = "<span color=\"" .. beautiful.fg_focus .. "\">「 </span>"
+l_end.text = "<span color=\"" .. beautiful.fg_faded .. "\"></span>"
 -- }}}
 
 -- {{{ System Tray
@@ -273,7 +273,7 @@ fswidget_t = awful.tooltip({
 vicious.register(fswidget, vicious.widgets.fs, "${/ used_p}<span color=\"" .. beautiful.fg_faded .. "\">r</span> ${" .. home_dir .. " used_p}<span color=\"" .. beautiful.fg_faded .. "\">h</span> ${/var used_p}<span color=\"" .. beautiful.fg_faded .. "\">v</span>", 59, "BAT0")
 -- }}}
 
---[[ {{{Net
+-- {{{Net
 netwidget = widget({ type = "textbox" })
 netwidget.bg_image = image(beautiful.icons.net_wired)
 netwidget:margin({left = 10, right = 6})
@@ -295,7 +295,7 @@ vicious.register(netwidget, vicious.widgets.net,
   function (widget, args)
       return string.format("% 4d<span color=\"" .. beautiful.fg_faded .. "\">u </span>% 5d<span color=\"" .. beautiful.fg_faded .. "\">d</span>", args["{eth0 up_kb}"] + args["{wlan0 up_kb}"], args["{eth0 down_kb}"] + args["{wlan0 down_kb}"])
   end, 3)
--- }}} ]]
+-- }}}
 
 -- {{{ Mail
 mailwidget = widget({ type = "textbox" })
@@ -312,7 +312,7 @@ mailwidget_t = awful.tooltip({
     timer_function = function()
         local text = ""
         for i, m in mail.iter() do
-            text = text .. string.format("<span color=\"" .. beautiful.fg_highlight .. "\">%s</span>:\n    %s\n", awful.util.escape(m["from"]), awful.util.escape(m["subject"]))
+            text = text .. string.format("<span color=\"%s\">%s</span>:\n    %s\n", beautiful.fg_highlight, awful.util.escape(m["from"]), awful.util.escape(m["subject"]))
         end
         if text == "" then
             return "No new mail."
@@ -336,7 +336,7 @@ weatherwidget:buttons(awful.util.table.join(
                         end
                         )))
 
-vicious.register(weatherwidget, vicious.widgets.weather, "${tempf}", 600, "KBOS")
+vicious.register(weatherwidget, vicious.widgets.weather, "${tempf} ${sky}", 600, "KBOS")
 -- }}}
 
 -- {{{ News
@@ -371,7 +371,7 @@ musicwidget = music.widget("{artist} - {title}",
                            pause = image(beautiful.icons.pause),
                            play = image(beautiful.icons.play)
                        })
-musicwidget.width = 200
+musicwidget.width = 500
 -- }}}
 
 
@@ -422,8 +422,8 @@ for s = 1, screen.count() do
             mailwidget,
             sep,
             volwidget,
-            --sep,
-            --netwidget,
+            sep,
+            netwidget,
             sep,
             fswidget,
             sep,

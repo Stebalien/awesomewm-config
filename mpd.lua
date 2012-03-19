@@ -1,3 +1,8 @@
+--[[
+An mpd backend for the awesome music framework.
+
+Unlike other implimentations, this does not poll mpd.
+--]]
 local socket = require("socket")
 local setmetatable = setmetatable
 local capi = { widget = widget,
@@ -15,9 +20,9 @@ local coroutine = coroutine
 module("mpd")
 
 
-host = "127.0.0.1"
-port = 6600
-password = nil
+HOST    = "127.0.0.1"
+PORT    = 6600
+PASSWORD= nil
 
 local state
 local reset = function()
@@ -53,12 +58,12 @@ end
 local connect = function()
     sock = socket.tcp()
     sock:settimeout(1)
-    sock:connect(host, port)
+    sock:connect(HOST, PORT)
     if not cmd(sock) then
         sock:close()
         return nil
     end
-    if password and not cmd(sock, "password " .. password) then
+    if PASSWORD and not cmd(sock, "password " .. PASSWORD) then
         sock:close()
         return nil
     end
