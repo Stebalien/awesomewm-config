@@ -40,4 +40,8 @@ paste -d ' ' <(cal $pmonth $pyear | format "<span color=\"$color\">" "</span>") 
       <(cal | format "" "" | sed "1!s:$day\b:<span color=\"$color2\">$day</span>:") \
       <(cal $nmonth $nyear | format "<span color=\"$color\">" "</span>") | head -n-1
 echo "<span color=\"$color\">_________________________________________________________________</span>"
+echo "<u>Reminders</u>"
 rem | tail -n+2 | fold -s -64
+echo "<u>Todo</u>"
+sed -e '/^$/d' -e 's/^/• /' ~/Documents/Notes/todo.txt
+
