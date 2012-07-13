@@ -23,6 +23,15 @@ require("music")
 --require("wicd")
 -- }}}
 
+
+-- Encode for html.
+encode = function(s)
+    return s:gsub("(.)", function(c)
+        return string.format("&#%d;", string.byte(c))
+    end)
+end
+
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -307,12 +316,13 @@ mailwidget:buttons(awful.util.table.join(
                             vicious.force({mailwidget})
                         end
                         )))
+
 mailwidget_t = awful.tooltip({
     objects = {mailwidget},
     timer_function = function()
         local text = ""
         for i, m in mail.iter() do
-            text = text .. string.format("<span color=\"%s\">%s</span>:\n    %s\n", beautiful.fg_highlight, awful.util.escape(m["from"]), awful.util.escape(m["subject"]))
+            text = text .. string.format("<span color=\"%s\">%s</span>:\n    %s\n", beautiful.fg_highlight, encode(m["from"]), encode(m["subject"]))
         end
         if text == "" then
             return "No new mail."
@@ -357,7 +367,7 @@ newswidget_t = awful.tooltip({
         if news == "" then
             return "No news."
         else
-            return awful.util.escape(news)
+            return encode(news)
         end
     end
 })
