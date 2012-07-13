@@ -22,7 +22,7 @@ theme.fg_focus      = "#336ec0"
 theme.fg_urgent     = "#850d0d"
 theme.fg_minimize   = "#555555"
 
-theme.border_width  = "1"
+theme.border_width  = "2"
 theme.border_normal = "#222222"
 theme.border_focus  = "#1B3A66"
 theme.border_marked = "#91231c"
