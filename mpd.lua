@@ -78,11 +78,12 @@ local refresh_co = function()
         capi.emit_signal("music::update")
         return
     end
+    local buffer, err
     while true do
         s:send("command_list_begin\nstatus\ncurrentsong\ncommand_list_end\n")
 
         while true do
-            local buffer,err = s:receive("*l")
+            buffer,err = s:receive("*l")
             if err == "timeout" then
                 coroutine.yield()
             elseif not buffer then
@@ -102,7 +103,7 @@ local refresh_co = function()
         s:settimeout(0)
         s:send("idle player\n")
         repeat
-            local buffer,err = s:receive("*l")
+            buffer,err = s:receive("*l")
             if err == "timeout" then
                 coroutine.yield()
             elseif not buffer then
@@ -117,7 +118,7 @@ end
 
 -- Default watcher to return false
 local watcher = nil
-local timer = capi.timer({timeout = 5})
+local timer = capi.timer({timeout = 2})
 
 local refresh = function()
     if not watcher or not coroutine.resume(watcher) then
