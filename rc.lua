@@ -342,7 +342,7 @@ weatherwidget:margin({left = 10, right = 6})
 weatherwidget.bg_align = "middle"
 weatherwidget:buttons(awful.util.table.join(
                         awful.button({ }, 1, function ()
-                            awful.util.spawn("firefox 'http://www.weather.com/weather/today/MIT+Museum+MA+51475:20'")
+                            awful.util.spawn(browser .. " 'http://www.weather.com/weather/today/MIT+Museum+MA+51475:20'")
                         end
                         )))
 
