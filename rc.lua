@@ -412,7 +412,7 @@ for s = 1, screen.count() do
     mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.label.all, mytaglist.buttons)
 
     -- Create the wibox
-    mywibox[s] = awful.wibox({ position = "top", screen = s, width = screen[s].geometry.width - 2, height = 13, border_width = 1, border_color = "#222222", fg = "#999999" })
+    mywibox[s] = awful.wibox({ position = "top", screen = s, width = screen[s].geometry.width - 2, height = 16, border_width = 1, border_color = "#222222", fg = "#999999" })
     if s == 1 then
         -- Add widgets to the wibox - order matters
         mywibox[s].widgets = {
