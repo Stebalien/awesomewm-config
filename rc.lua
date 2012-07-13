@@ -469,13 +469,14 @@ root.buttons(awful.util.table.join(
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
     -- Custom
-    awful.key({}, "F12", function () scratch.drop("term -title tilda", "bottom", "right", .4, .4, 0, 0, true) end), -- Tilda
+    awful.key({}, "F12", function () scratch.drop("term -title tilda -e tmux a", "bottom", "right", .4, .4, 0, 0, true) end), -- Tilda
     awful.key({}, "Pause", function () scratch.drop("term -title tilda", "bottom", "right", .4, .4, 0, 0, true) end), -- Tilda
     awful.key({"Control", "Shift"}, "Escape", function () awful.util.spawn("term -e htop") end), -- Procs
     awful.key({ modkey }, "Up", revelation.revelation), -- Revelation
     awful.key({ "Control", "Mod1" }, "Up", revelation.revelation), -- Revelation
     --awful.key({}, "XF86Launch1", function () wicd.scan() end), -- Refresh wireless network list
     awful.key({ modkey }, "d", function () awful.util.spawn("dict") end), -- Lookup selected words.
+    awful.key({ modkey }, "t", function () awful.util.spawn("todo-add") end), -- Add a todo
     awful.key({ modkey }, "Print", function ()
         naughty.notify({text = "Screenshot taken."})
         awful.util.spawn("scrot -s screen-%F-%H%M%S.png")
@@ -499,6 +500,8 @@ globalkeys = awful.util.table.join(
         io.close(gpg)
     end), -- Verify signature.
 
+    awful.key({ modkey }, "c", function () awful.util.spawn('bash -c "xclip -o | qrencode -o - | display"') end), -- Generate QRCode
+
     -- dmenu
     awful.key({ modkey }, "r", function () awful.util.spawn("dmenu-tools run-awesome") end), -- Run
     awful.key({ 'Mod3' }, "m", function () awful.util.spawn("dmenu-tools mpd") end), -- MPD
@@ -509,9 +512,10 @@ globalkeys = awful.util.table.join(
     awful.key({}, "#172", function ()
         music.toggle()
     end),
-    -- Remove Song
+    -- Select Song
     awful.key({}, "#174", function ()
-        music.remove()
+        --music.remove()
+        awful.util.spawn("dmenu-tools mpd")
     end),
     -- Prev
     awful.key({}, "#173", function ()
@@ -639,7 +643,6 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
     awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
     awful.key({ modkey, "Shift"   }, "r",      function (c) c:redraw()                       end),
-    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
     awful.key({ modkey,           }, "m",
         function (c)
             c.maximized_horizontal = not c.maximized_horizontal
@@ -726,17 +729,26 @@ awful.rules.rules = {
        properties = { floating = true, focus = true } },
     { rule_any = { class = { "Qalculate-gtk", "Pidgin", "Oblogout" } },
        properties = { floating = true} },
-    { rule = { class = "URxvt" },
+    { rule = { class = "URxvt"},
        properties = {size_hints_honor = false } },
+    { rule = { class = "XTerm"},
+       properties = { size_hints_honor = false } },
     { rule = { name = "tilda" },
        properties = { floating = true, ontop = true, focus = true } },
+    { rule = { class = "Display" },
+       properties = { floating = true, ontop = true, focus = true },
+       callback = awful.placement.centered,
+    },
     { rule = { title = "Download Manager" },
        properties = { floating = true, ontop = true } },
     { rule = { class = "Eclipse", name="Commit" },
        properties = { floating = false },
        callback = awful.client.setslave },
     { rule = { class = "Pithos", name = "Pithos"},
-      callback = awful.client.setslave
+      callback = function(c)
+          awful.client.setslave(c)
+          c:geometry({width = 400})
+      end,
     },
     { rule = { class = "Conky" },
        properties = { tag = tags[1][1], switchtotag = false, floating = true } },
