@@ -239,15 +239,15 @@ volwidget_t = awful.tooltip({
 })
 volwidget:buttons(awful.util.table.join(
                         awful.button({ }, 1, function ()
-                            awful.util.spawn("amixer -q set Master toggle")
+                            awful.util.spawn("pamixer --toggle-mute")
                             vicious.force({volwidget})
                         end),
                         awful.button({ }, 4, function ()
-                            awful.util.spawn("amixer -q set Master 1%+ unmute")
+                            awful.util.spawn("pamixer --increase 1")
                             vicious.force({volwidget})
                         end),
                         awful.button({ }, 5, function ()
-                            awful.util.spawn("amixer -q set Master 1%- unmute")
+                            awful.util.spawn("pamixer --decrease 1")
                             vicious.force({volwidget})
                         end)
                         ))
