@@ -43,5 +43,5 @@ echo "<span color=\"$color\">___________________________________________________
 echo "<u>Reminders</u>"
 rem | tail -n+2 | fold -s -64
 echo "<u>Todo</u>"
-sed -e '/^$/d' -e 's/^/• /' ~/Documents/Notes/todo.txt
+sed -e '/^$/d' -e 's/^/• /' ~/Documents/Notes/todo.txt | fold -s -64
 
