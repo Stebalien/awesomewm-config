@@ -837,7 +837,7 @@ end)
 -- }}}
 
 -- {{{ Notifications
-naughty.config.timeout          = 5
+naughty.config.timeout          = 10
 naughty.config.presets.normal.screen           = 1
 naughty.config.presets.normal.position         = "top_right"
 naughty.config.presets.normal.margin           = 4
