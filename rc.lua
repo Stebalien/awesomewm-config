@@ -726,7 +726,13 @@ awful.rules.rules = {
     { rule = { class = "MPlayer" },
       properties = { floating = true } },
     { rule = { type = "dialog" },
-      properties = { opacity = 0.95, focus = true } },
+      properties = {
+          opacity = 0.95,
+          focus = true,
+          floating = true,
+          ontop = true
+
+      } },
     { rule = { class = "pinentry" },
       properties = { floating = true } },
     { rule = { class = "Firefox", name="Downloads" },
