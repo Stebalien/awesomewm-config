@@ -22,9 +22,9 @@ theme.fg_focus      = "#336ec0"
 theme.fg_urgent     = "#850d0d"
 theme.fg_minimize   = "#555555"
 
-theme.border_width  = "2"
+theme.border_width  = "1"
 theme.border_normal = "#222222"
-theme.border_focus  = "#1B3A66"
+theme.border_focus  = "#15548A"
 theme.border_marked = "#91231c"
 
 -- There are other variable sets
@@ -105,8 +105,14 @@ theme.layout_tile = theme_dir .. "/layouts/tilew.png"
 theme.layout_tiletop = theme_dir .. "/layouts/tiletopw.png"
 theme.layout_spiral  = theme_dir .. "/layouts/spiralw.png"
 theme.layout_dwindle = theme_dir .. "/layouts/dwindlew.png"
+theme.layout_uselessfair = theme_dir .. "/layouts/uselessfairw.png"
+theme.layout_termfair = theme_dir .. "/layouts/termfairw.png"
+theme.layout_centerwork = theme_dir .. "/layouts/centerworkw.png"
+theme.layout_browse = theme_dir .. "/layouts/browsew.png"
 
 theme.awesome_icon = "/usr/share/awesome/icons/awesome16.png"
+
+theme.useless_gap_width = 10
 
 theme.icons = {}
 icon_dir = theme_dir .. "/icons/png/"
