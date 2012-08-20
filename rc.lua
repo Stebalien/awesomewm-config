@@ -475,8 +475,8 @@ root.buttons(awful.util.table.join(
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
     -- Custom
-    awful.key({}, "F12", function () scratch.drop("term -title tilda -e tmux a", "bottom", "right", .4, .4, 0, 0, true) end), -- Tilda
-    awful.key({}, "Pause", function () scratch.drop("term -title tilda", "bottom", "right", .4, .4, 0, 0, true) end), -- Tilda
+    awful.key({}, "F12", function () scratch.drop("term -title tilda -e tmux a", "bottom", "right", .4, .4, 0, 0, true, 1) end), -- Tilda
+    awful.key({}, "Pause", function () scratch.drop("term -title tilda", "bottom", "right", .4, .4, 0, 0, true, 1) end), -- Tilda
     awful.key({"Control", "Shift"}, "Escape", function () awful.util.spawn("term -e htop") end), -- Procs
     awful.key({ modkey }, "Up", revelation.revelation), -- Revelation
     awful.key({ "Control", "Mod1" }, "Up", revelation.revelation), -- Revelation
