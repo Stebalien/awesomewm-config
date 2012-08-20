@@ -563,8 +563,8 @@ globalkeys = awful.util.table.join(
     awful.key({ "Control", "Mod1" }, "Right",  awful.tag.viewnext       ),
     awful.key({                   }, "G5",   awful.tag.viewprev       ),
     awful.key({                   }, "G6",  awful.tag.viewnext       ),
-    awful.key({                   }, "XF86Back",   awful.tag.viewprev       ),
-    awful.key({                   }, "XF86Forward",  awful.tag.viewnext       ),
+    --awful.key({                   }, "XF86Back",   awful.tag.viewprev       ),
+    --awful.key({                   }, "XF86Forward",  awful.tag.viewnext       ),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
 
     awful.key({ modkey,           }, "j",
