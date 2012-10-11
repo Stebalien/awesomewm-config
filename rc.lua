@@ -122,13 +122,21 @@ end
 
 -- {{{ Menu
 -- Create a laucher widget and a main menu
-mysessionmenu = {
-    { "lock", "xsession lock" },
-    { "sleep", "xsession sleep"},
-    { "logout", "xsession logout"},
-    { "restart", "xsession restart"},
-    { "shutdown", "xsession shutdown"}
+SYSTEMCTL="systemctl -q --no-block"
+
+session = {
+    lock        = SYSTEMCTL .. " --user start lock.target",
+    sleep       = SYSTEMCTL .. " suspend",
+    logout      = SYSTEMCTL .. " --user exit",
+    restart     = SYSTEMCTL .. " reboot",
+    shutdown    = SYSTEMCTL .. " poweroff"
 }
+
+mysessionmenu = {}
+for k, v in pairs(session) do
+    table.insert(mysessionmenu, {k, v})
+end
+
 mysystemmenu = {
     { "io", terminal .. " -e sudo iotop" },
     { "network", terminal .. " -e sudo iftop" },
@@ -551,11 +559,11 @@ globalkeys = awful.util.table.join(
     end), -- UP
 
     -- Power/Session
-    awful.key({}, "XF86Sleep", function () awful.util.spawn("xsession suspend") end), -- Suspend
+    awful.key({}, "XF86Sleep", function () awful.util.spawn(session.suspend) end), -- Suspend
     awful.key({}, "XF86Battery", function () awful.util.spawn("bash -c 'notify-send \"$(acpi -b)\"'") end), -- Battery Status
     awful.key({"Control", "Mod1"}, "Delete", function () awful.util.spawn("dmenu-tools power") end), -- Oblogout
-    awful.key({"Control", "Shift"}, "z", function () awful.util.spawn("xsession lock") end), -- Lock
-    awful.key({}, "XF86ScreenSaver", function () awful.util.spawn("xsession lock") end), -- Lock
+    awful.key({"Control", "Shift"}, "z", function () awful.util.spawn(session.lock) end), -- Lock
+    awful.key({}, "XF86ScreenSaver", function () awful.util.spawn(session.lock) end), -- Lock
     awful.key({}, "XF86Display", function () awful.util.spawn("external-monitor") end), -- Battery Status
 
     -- System
