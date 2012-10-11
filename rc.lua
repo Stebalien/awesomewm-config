@@ -518,7 +518,7 @@ globalkeys = awful.util.table.join(
         io.close(gpg)
     end), -- Verify signature.
 
-    awful.key({ modkey }, "c", function () awful.util.spawn('bash -c "xclip -o | qrencode -o - | display"') end), -- Generate QRCode
+    awful.key({ modkey }, "c", function () awful.util.spawn('bash -c "xclip -o | qrencode -o - | display -"') end), -- Generate QRCode
 
     -- dmenu
     awful.key({ modkey }, "r", function () awful.util.spawn("dmenu-tools run-awesome") end), -- Run
