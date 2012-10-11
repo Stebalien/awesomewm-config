@@ -27,9 +27,13 @@ require("music")
 
 -- Encode for html.
 encode = function(s)
-    return s:gsub("(.)", function(c)
-        return string.format("&#%d;", string.byte(c))
-    end)
+    if s then
+        return s:gsub("(.)", function(c)
+            return string.format("&#%d;", string.byte(c))
+        end)
+    else
+        return ""
+    end
 end
 
 
