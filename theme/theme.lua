@@ -12,19 +12,19 @@ theme.font          = "snap 8"
 theme.bg_normal     = "#121212"
 
 theme.bg_focus      = "#111111"
-theme.bg_urgent     = "#336ec0"
+theme.bg_urgent     = "#A6000A"
 theme.bg_minimize   = "#111111"
 
 theme.fg_normal     = "#aaaaaa"
 theme.fg_highlight  = "#dddddd"
 theme.fg_faded      = "#555555"
-theme.fg_focus      = "#336ec0"
+theme.fg_focus      = "#A6000A"
 theme.fg_urgent     = "#850d0d"
 theme.fg_minimize   = "#555555"
 
-theme.border_width  = "1"
+theme.border_width  = "2"
 theme.border_normal = "#222222"
-theme.border_focus  = "#15548A"
+theme.border_focus  = "#A6000A"
 theme.border_marked = "#91231c"
 
 -- There are other variable sets
