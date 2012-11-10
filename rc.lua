@@ -13,7 +13,7 @@ require("revelation")
 require("eminent")
 vicious = require("vicious")
 vicious.contrib = require("vicious.contrib")
-require("newsbeuter")
+--require("newsbeuter")
 --require("lognotify")
 require("mail")
 require("math")
@@ -378,6 +378,7 @@ vicious.register(weatherwidget, vicious.widgets.weather, "${tempf} ${sky}", 600,
 -- }}}
 
 -- {{{ News
+--[[
 
 newswidget = widget({ type = "textbox" })
 newswidget.bg_image = image(beautiful.icons.info_02)
@@ -400,6 +401,7 @@ newswidget_t = awful.tooltip({
     end
 })
 vicious.register(newswidget, newsbeuter.widget, "$1", 11)
+--]]
 -- }}}
 
 -- {{{ MPD
@@ -456,7 +458,7 @@ for s = 1, screen.count() do
             sep,
             weatherwidget,
             sep,
-            newswidget,
+            --newswidget,
             mailwidget,
             sep,
             volwidget,
