@@ -755,6 +755,9 @@ awful.rules.rules = {
           ontop = true
 
       } },
+    { rule = { class = "gcr-prompter" },
+      properties = { focus = true, floating = true, ontop = true },
+      callback = awful.placement.centered },
     { rule = { class = "pinentry" },
       properties = { floating = true } },
     { rule = { class = "Firefox", name="Downloads" },
