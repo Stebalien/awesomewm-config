@@ -468,7 +468,6 @@ for s = 1, screen.count() do
             sep,
             tempwidget,
             batwidget,
-            sep,
             memwidget,
             cpuwidget,
             l_end,
