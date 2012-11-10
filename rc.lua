@@ -9,7 +9,6 @@ require("beautiful")
 require("naughty")
 require("layouts")
 -- My Libraries
-require("scratch")
 require("revelation")
 require("eminent")
 vicious = require("vicious")
@@ -21,6 +20,7 @@ require("math")
 require("mpd")
 require("pianobar")
 require("music")
+require("quake")
 --require("wicd")
 -- }}}
 
@@ -70,6 +70,16 @@ editor = os.getenv("EDITOR") or "vim"
 config_dir = awful.util.getdir("config")
 home_dir = os.getenv("HOME")
 editor_cmd = terminal .. " -e " .. editor
+
+quake_console = quake({
+    terminal = terminal,
+    name = "tilda",
+    height = 300,
+    width = 490,
+    horiz = "right",
+    vert = "bottom",
+    screen = 1
+})
 
 -- Disable startup notifications
 local spawn = awful.util.spawn
@@ -485,10 +495,10 @@ root.buttons(awful.util.table.join(
 -- }}}
 
 -- {{{ Key bindings
+
 globalkeys = awful.util.table.join(
     -- Custom
-    awful.key({}, "F12", function () scratch.drop("term -title tilda -e tmux a", "bottom", "right", .4, .4, 0, 0, true, 1) end), -- Tilda
-    awful.key({}, "Pause", function () scratch.drop("term -title tilda", "bottom", "right", .4, .4, 0, 0, true, 1) end), -- Tilda
+    awful.key({}, "F12", function () quake_console:toggle() end),
     awful.key({"Control", "Shift"}, "Escape", function () awful.util.spawn("term -e htop") end), -- Procs
     awful.key({ modkey }, "Up", revelation.revelation), -- Revelation
     awful.key({ "Control", "Mod1" }, "Up", revelation.revelation), -- Revelation
