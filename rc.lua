@@ -410,7 +410,7 @@ musicwidget = music.widget("{artist} - {title}",
                            pause = image(beautiful.icons.pause),
                            play = image(beautiful.icons.play)
                        })
-musicwidget.width = 500
+musicwidget.width = 400
 -- }}}
 
 
