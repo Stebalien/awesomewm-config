@@ -507,7 +507,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "t", function () awful.util.spawn("todo-add") end), -- Add a todo
     awful.key({ modkey }, "Print", function ()
         naughty.notify({text = "Screenshot taken."})
-        awful.util.spawn("scrot -s screen-%F-%H%M%S.png")
+        awful.util.spawn("scrot screen-%F-%H%M%S.png")
     end), -- Take a screenshot.
     awful.key({ modkey, "Shift" }, "Print", function ()
         naughty.notify({text = "Select area/window to capture."})
