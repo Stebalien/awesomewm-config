@@ -24,8 +24,7 @@ require("quake")
 --require("wicd")
 -- }}}
 
-
--- Encode for html.
+--{{{ Encode for html.
 encode = function(s)
     if s then
         return s:gsub("(.)", function(c)
@@ -35,7 +34,7 @@ encode = function(s)
         return ""
     end
 end
-
+--}}}
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
