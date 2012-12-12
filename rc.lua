@@ -83,7 +83,7 @@ quake_console = quake({
 
 -- Disable startup notifications
 local spawn = awful.util.spawn
-awful.util.spawn = function (s) spawn(s, false) end
+awful.util.spawn = function (p, n, s) return spawn(p, false, s) end
 
 -- Themes define colours, icons, and wallpapers
 beautiful.init(config_dir .. "/theme/theme.lua")
