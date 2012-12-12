@@ -26,7 +26,7 @@ case $month in
 esac
 
 color="#666666"
-color2="#336ec0"
+color2="#A6000A"
 
 format() {
     IFS="\n"
@@ -42,7 +42,7 @@ echo "<span color=\"$color\">___________________________________________________
 
 if command -v rem >/dev/null; then
     echo "<u>Reminders</u>"
-    rem | tail -n+2 | fold -s -64
+    rem -qf | sed -e '/^$/d' -e 's/^/• /' | tail -n+2 | fold -s -64
 fi
 if [[ -r ~/Documents/Notes/todo.txt ]]; then
     echo "<u>Todo</u>"
