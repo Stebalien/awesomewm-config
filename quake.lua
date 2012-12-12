@@ -29,6 +29,8 @@
 local setmetatable = setmetatable
 local string = string
 local awful  = require("awful")
+local naughty = naughty
+local os = { time = os.time }
 local capi   = { mouse = mouse,
 screen = screen,
 client = client,
@@ -38,84 +40,95 @@ timer = timer }
 module("quake")
 
 local QuakeConsole = {}
+local consoles = {};
+
+local init = function()
+    init = function() end
+    capi.client.add_signal("manage", function(c)
+        if consoles[c.pid] ~= nil then
+            consoles[c.pid]:show(c)
+        end
+    end)
+    capi.client.add_signal("unmanage", function(c)
+        if consoles[c.pid] ~= nil then
+            consoles[c.pid]:hide(c)
+        end
+    end)
+end
+
+
+function QuakeConsole:findClient()
+    if not self.pid then return end
+
+    for c in awful.client.cycle(function (c)
+        return c.pid == self.pid
+    end) do return c end
+end
+
+function QuakeConsole:hide(client)
+    if not self.visible then return end
+
+    if not client then client = self:findClient() end
+    if client then client.hidden = true end
+    self.visible = false
+end
 
 -- Display
-function QuakeConsole:display()
+function QuakeConsole:show(client)
+    if self.visible then return end
+
     -- First, we locate the terminal
-    local client = nil
-    local i = 0
-    for c in awful.client.cycle(function (c)
-        -- c.name may be changed!
-        return c.instance == self.name
-    end,
-    nil, self.screen) do
-    i = i + 1
-    if i == 1 then
-        client = c
-    else
-        -- Additional matching clients, let's remove the sticky bit
-        -- which may persist between awesome restarts. We don't close
-        -- them as they may be valuable. They will just turn into a
-        -- classic terminal.
-        c.sticky = false
-        c.ontop = false
-        c.above = false
+    if not client then client = self:findClient() end
+
+    if not client then
+        if self.pid then consoles[self.pid] = nil end
+        self.pid = awful.util.spawn(self.terminal .. " " .. string.format(self.argname, self.name), false)
+        -- Race condition much?
+        consoles[self.pid] = self
+        return -- Wait for client to spawn.
     end
-end
 
-if not client and not self.visible then
-    -- The terminal is not here yet but we don't want it yet. Just do nothing.
-    return
-end
+    -- Comptute size
+    local geom = capi.screen[self.screen].workarea
+    local width, height = self.width, self.height
+    if width  <= 1 then width = geom.width * width end
+    if height <= 1 then height = geom.height * height end
+    local x, y
+    if     self.horiz == "left"  then x = geom.x
+    elseif self.horiz == "right" then x = geom.width + geom.x - width
+    else   x = geom.x + (geom.width - width)/2 end
+    if     self.vert == "top"    then y = geom.y
+    elseif self.vert == "bottom" then y = geom.height + geom.y - height
+    else   y = geom.y + (geom.height - height)/2 end
 
-if not client then
-    -- The client does not exist, we spawn it
-    awful.util.spawn(self.terminal .. " " .. string.format(self.argname, self.name),
-    false, self.screen)
-    return
-end
+    -- Resize
+    awful.client.floating.set(client, true)
+    client.border_width = 0
+    client.size_hints_honor = false
+    client:geometry({ x = x, y = y, width = width, height = height })
 
--- Comptute size
-local geom = capi.screen[self.screen].workarea
-local width, height = self.width, self.height
-if width  <= 1 then width = geom.width * width end
-if height <= 1 then height = geom.height * height end
-local x, y
-if     self.horiz == "left"  then x = geom.x
-elseif self.horiz == "right" then x = geom.width + geom.x - width
-else   x = geom.x + (geom.width - width)/2 end
-if     self.vert == "top"    then y = geom.y
-elseif self.vert == "bottom" then y = geom.height + geom.y - height
-else   y = geom.y + (geom.height - height)/2 end
+    -- Sticky and on top
+    client.ontop = true
+    client.above = true
+    client.skip_taskbar = true
+    client.sticky = true
 
--- Resize
-awful.client.floating.set(client, true)
-client.border_width = 0
-client.size_hints_honor = false
-client:geometry({ x = x, y = y, width = width, height = height })
+    -- This is not a normal window, don't apply any specific keyboard stuff
+    client:buttons({})
+    client:keys({})
 
--- Sticky and on top
-client.ontop = true
-client.above = true
-client.skip_taskbar = true
-client.sticky = true
-
--- This is not a normal window, don't apply any specific keyboard stuff
-client:buttons({})
-client:keys({})
-
--- Toggle display
-if self.visible then
     client.hidden = false
     client:raise()
     capi.client.focus = client
-else
-    client.hidden = true
+
+    self.visible = true
 end
-end
+
 
 -- Create a console
 function QuakeConsole:new(config)
+    init()
+
     -- The "console" object is just its configuration.
 
     -- The application to be invoked is:
@@ -134,34 +147,12 @@ function QuakeConsole:new(config)
     config.visible  = config.visible or false -- Initially, not visible
 
     local console = setmetatable(config, { __index = QuakeConsole })
-    capi.client.add_signal("manage",
-    function(c)
-        if c.instance == console.name and c.screen == console.screen then
-            console:display()
-        end
-    end)
-    capi.client.add_signal("unmanage",
-    function(c)
-        if c.instance == console.name and c.screen == console.screen then
-            console.visible = false
-        end
-    end)
-
-    -- "Reattach" currently running QuakeConsole. This is in case awesome is restarted.
-    local reattach = capi.timer { timeout = 0 }
-    reattach:add_signal("timeout",
-    function()
-        reattach:stop()
-        console:display()
-    end)
-    reattach:start()
     return console
 end
 
 -- Toggle the console
 function QuakeConsole:toggle()
-    self.visible = not self.visible
-    self:display()
+    if self.visible then self:hide() else self:show() end
 end
 
 setmetatable(_M, { __call = function(_, ...) return QuakeConsole:new(...) end })
