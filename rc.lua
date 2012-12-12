@@ -746,7 +746,7 @@ awful.rules.rules = {
                      minimized = false,
                      keys = clientkeys,
                      buttons = clientbuttons } },
-    { rule = { class = "MPlayer" },
+    { rule = { class = "mplayer2" },
       properties = { floating = true } },
     { rule = { type = "dialog" },
       properties = {
