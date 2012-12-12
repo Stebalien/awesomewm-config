@@ -72,9 +72,10 @@ editor_cmd = terminal .. " -e " .. editor
 
 quake_console = quake({
     terminal = terminal,
+    argname = "-name %s -e tmux",
     name = "tilda",
     height = 300,
-    width = 490,
+    width = 520,
     horiz = "right",
     vert = "bottom",
     screen = 1
