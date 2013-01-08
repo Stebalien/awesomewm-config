@@ -36,20 +36,17 @@ screen = screen,
 client = client,
 timer = timer }
 
--- I use a namespace for my modules...
-module("quake")
-
 local QuakeConsole = {}
 local consoles = {};
 
 local init = function()
     init = function() end
-    capi.client.add_signal("manage", function(c)
+    capi.client.connect_signal("manage", function(c)
         if consoles[c.pid] ~= nil then
             consoles[c.pid]:show(c)
         end
     end)
-    capi.client.add_signal("unmanage", function(c)
+    capi.client.connect_signal("unmanage", function(c)
         if consoles[c.pid] ~= nil then
             consoles[c.pid]:hide(c)
         end
@@ -60,7 +57,7 @@ end
 function QuakeConsole:findClient()
     if not self.pid then return end
 
-    for c in awful.client.cycle(function (c)
+    for c in awful.client.iterate(function (c)
         return c.pid == self.pid
     end) do return c end
 end
@@ -155,4 +152,7 @@ function QuakeConsole:toggle()
     if self.visible then self:hide() else self:show() end
 end
 
-setmetatable(_M, { __call = function(_, ...) return QuakeConsole:new(...) end })
+setmetatable(QuakeConsole, { __call = function(_, ...) return QuakeConsole:new(...) end })
+
+return QuakeConsole
+

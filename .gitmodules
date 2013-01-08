@@ -1,6 +1,3 @@
-[submodule "eminent"]
-	path = eminent
-	url = git://git.glacicle.org/awesome/eminent.git
 [submodule "vicious"]
 	path = vicious
 	url = http://git.sysphere.org/vicious

@@ -1,7 +1,7 @@
 ---------------------------
 -- Default awesome theme --
 ---------------------------
-require("lfs")
+local lfs = require("lfs")
 
 local theme_dir = config_dir .. "/theme"
 
@@ -9,18 +9,19 @@ theme = {}
 
 theme.font          = "snap 8"
 
-theme.bg_normal     = "#121212"
 
+theme.bg_normal     = "#121212"
 theme.bg_focus      = "#111111"
 theme.bg_urgent     = "#A6000A"
 theme.bg_minimize   = "#111111"
+theme.bg_systray    = theme.bg_normal
 
 theme.fg_normal     = "#aaaaaa"
-theme.fg_highlight  = "#dddddd"
-theme.fg_faded      = "#555555"
 theme.fg_focus      = "#A6000A"
 theme.fg_urgent     = "#850d0d"
 theme.fg_minimize   = "#555555"
+theme.fg_highlight  = "#dddddd"
+theme.fg_faded      = "#555555"
 
 theme.border_width  = "2"
 theme.border_normal = "#222222"
@@ -89,8 +90,6 @@ theme.titlebar_maximized_button_focus_inactive  = theme_dir .. "/titlebar/maximi
 theme.titlebar_maximized_button_normal_active = theme_dir .. "/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_active  = theme_dir .. "/titlebar/maximized_focus_active.png"
 
--- You can use your own command to set your wallpaper
-theme.wallpaper_cmd = { "nitrogen --restore" }
 
 -- You can use your own layout icons like this:
 theme.layout_fairh = theme_dir .. "/layouts/fairhw.png"
@@ -115,7 +114,7 @@ theme.awesome_icon = "/usr/share/awesome/icons/awesome16.png"
 theme.useless_gap_width = 10
 
 theme.icons = {}
-icon_dir = theme_dir .. "/icons/png/"
+local icon_dir = theme_dir .. "/icons/png/"
 
 for f in lfs.dir(icon_dir) do
     theme.icons[string.sub(f, 0, -5)] = icon_dir .. f
