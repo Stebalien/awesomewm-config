@@ -15,54 +15,7 @@ layouts = require("layouts")
 -- Terminal
 quake = require("quake")
 vicious = require("vicious")
---vicious.contrib = require("vicious.contrib")
-
---{{{ Encode for html.
-encode = function(s)
-    if s then
-        return s:gsub("(.)", function(c)
-            return string.format("&#%d;", string.byte(c))
-        end)
-    else
-        return ""
-    end
-end
---}}}
-
-local widget = function(...)
-    local options = {}
-    local arg = {...}
-    if type(arg[#arg]) == "table" then
-        options = table.remove(arg)
-    end
-
-    local w = options.widget
-    if not w then
-        w = wibox.widget.textbox()
-    end
-    vicious.register(w, ...)
-
-    if options.icon then
-        local t = w
-        local i = wibox.layout.margin(wibox.widget.imagebox(options.icon))
-        i:set_margins(4)
-        w = wibox.layout.fixed.horizontal()
-        w:add(i)
-        w:add(t)
-    end
-    if options.tooltip then
-        awful.tooltip({ objects = {w}, timer_function = options.tooltip })
-    end
-    if options.min_width then
-        local old_fit = w.fit
-        w.fit = function(...)
-            x, y = old_fit(...)
-            return math.max(options.min_width, x), y
-        end
-    end
-
-    return w
-end
+util = require("util")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -224,7 +177,7 @@ datewidget_t:set_timeout(60)
 -- }}}
 
 -- {{{ Memory
-local memwidget = widget(vicious.widgets.mem, "$1", 13, {
+local memwidget = util.widget(vicious.widgets.mem, "$1", 13, {
     icon = beautiful.icons.mem, 
     min_width = 30,
     tooltip = function()
@@ -235,7 +188,7 @@ local memwidget = widget(vicious.widgets.mem, "$1", 13, {
 -- }}}
 
 -- {{{ CPU
-local cpuwidget = widget(vicious.widgets.cpu, "$1", 2, {
+local cpuwidget = util.widget(vicious.widgets.cpu, "$1", 2, {
     icon = beautiful.icons.cpu,
     min_width = 30,
     tooltip = function()
@@ -246,7 +199,7 @@ local cpuwidget = widget(vicious.widgets.cpu, "$1", 2, {
     end
 })
 -- }}}
-local tempwidget  = widget(vicious.widgets.thermal, "$1", 17, "thermal_zone0", {
+local tempwidget  = util.widget(vicious.widgets.thermal, "$1", 17, "thermal_zone0", {
     icon = beautiful.icons.temp,
     min_width = 30,
     tooltip = function()
@@ -256,7 +209,7 @@ local tempwidget  = widget(vicious.widgets.thermal, "$1", 17, "thermal_zone0", {
 -- }}}
 
 -- {{{ Volume
-local volwidget  = widget(vicious.widgets.volume, "$1$2", 67, "Master", {
+local volwidget  = util.widget(vicious.widgets.volume, "$1$2", 67, "Master", {
     icon = beautiful.icons.spkr_01,
     tooltip = function()
         return awful.util.pread("amixer get Master")
@@ -265,7 +218,7 @@ local volwidget  = widget(vicious.widgets.volume, "$1$2", 67, "Master", {
 -- }}}
 
 -- {{{ Battery
-local batwidget  = widget(vicious.widgets.bat, "$2$1", 61, "BAT0", {
+local batwidget  = util.widget(vicious.widgets.bat, "$2$1", 61, "BAT0", {
     icon = beautiful.icons.bat_full_02,
     tooltip = function()
         return awful.util.pread("acpi -b")
@@ -274,7 +227,7 @@ local batwidget  = widget(vicious.widgets.bat, "$2$1", 61, "BAT0", {
 -- }}}
 
 -- {{{ Drives
-local fswidget = widget(vicious.widgets.fs, "${/ used_p}<span color=\"" ..
+local fswidget = util.widget(vicious.widgets.fs, "${/ used_p}<span color=\"" ..
 beautiful.fg_faded ..  "\">r</span> ${" ..  home_dir .. " used_p}<span color=\"" ..
 beautiful.fg_faded .. "\">h</span> ${/var used_p}<span color=\"" ..
 beautiful.fg_faded .. "\">v</span>", 59, "BAT0", {
@@ -289,7 +242,7 @@ beautiful.fg_faded .. "\">v</span>", 59, "BAT0", {
 -- }}}
 
 -- {{{Net
-netwidget = widget(vicious.widgets.net,
+netwidget = util.widget(vicious.widgets.net,
     function (widget, args)
         return string.format("% 4d<span color=\"" .. beautiful.fg_faded .. "\">u </span>% 5d<span color=\"" .. beautiful.fg_faded .. "\">d</span>", args["{eth0 up_kb}"] + args["{wlan0 up_kb}"], args["{eth0 down_kb}"] + args["{wlan0 down_kb}"])
     end, 3, {
@@ -321,7 +274,7 @@ mailwidget_t = awful.tooltip({
     timer_function = function()
         local text = ""
         for i, m in mail.iter() do
-            text = text .. string.format("<span color=\"%s\">%s</span>:\n    %s\n", beautiful.fg_highlight, encode(m["from"]), encode(m["subject"]))
+            text = text .. string.format("<span color=\"%s\">%s</span>:\n    %s\n", beautiful.fg_highlight, util.encode(m["from"]), util.encode(m["subject"]))
         end
         if text == "" then
             return "No new mail."
@@ -335,7 +288,7 @@ vicious.register(mailwidget, mail.widget, "$1", 11)
 -- }}} ]]
 
 -- {{{ Weather
-weatherwidget = widget(vicious.widgets.weather, "${tempf} ${sky}", 600, "KBOS", {
+weatherwidget = util.widget(vicious.widgets.weather, "${tempf} ${sky}", 600, "KBOS", {
     icon = beautiful.icons.dish
 })
 
@@ -360,7 +313,7 @@ newswidget_t = awful.tooltip({
         if news == "" then
             return "No news."
         else
-            return encode(news)
+            return util.encode(news)
         end
     end
 })
