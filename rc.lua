@@ -17,6 +17,7 @@ quake = require("quake")
 vicious = require("vicious")
 util = require("util")
 mail = require("mail")
+require("eminent")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
