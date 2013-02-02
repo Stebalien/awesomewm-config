@@ -177,7 +177,7 @@ datewidget_t:set_timeout(60)
 -- }}}
 
 -- {{{ Memory
-local memwidget = util.widget(vicious.widgets.mem, "$1", 13, {
+memwidget = util.widget(vicious.widgets.mem, "$1", 13, {
     icon = beautiful.icons.mem, 
     min_width = 30,
     tooltip = function()
@@ -188,7 +188,7 @@ local memwidget = util.widget(vicious.widgets.mem, "$1", 13, {
 -- }}}
 
 -- {{{ CPU
-local cpuwidget = util.widget(vicious.widgets.cpu, "$1", 2, {
+cpuwidget = util.widget(vicious.widgets.cpu, "$1", 6, {
     icon = beautiful.icons.cpu,
     min_width = 30,
     tooltip = function()
@@ -199,7 +199,7 @@ local cpuwidget = util.widget(vicious.widgets.cpu, "$1", 2, {
     end
 })
 -- }}}
-local tempwidget  = util.widget(vicious.widgets.thermal, "$1", 17, "thermal_zone0", {
+tempwidget  = util.widget(vicious.widgets.thermal, "$1", 17, "thermal_zone0", {
     icon = beautiful.icons.temp,
     min_width = 30,
     tooltip = function()
@@ -209,16 +209,11 @@ local tempwidget  = util.widget(vicious.widgets.thermal, "$1", 17, "thermal_zone
 -- }}}
 
 -- {{{ Volume
-local volwidget  = util.widget(vicious.widgets.volume, "$1$2", 67, "Master", {
-    icon = beautiful.icons.spkr_01,
-    tooltip = function()
-        return awful.util.pread("amixer get Master")
-    end
-})
+volwidget  = util.widget(vicious.widgets.volume, "$1$2", 67, "Master", { icon = beautiful.icons.spkr_01 })
 -- }}}
 
 -- {{{ Battery
-local batwidget  = util.widget(vicious.widgets.bat, "$2$1", 61, "BAT0", {
+batwidget  = util.widget(vicious.widgets.bat, "$2$1", 61, "BAT0", {
     icon = beautiful.icons.bat_full_02,
     tooltip = function()
         return awful.util.pread("acpi -b")
@@ -227,7 +222,7 @@ local batwidget  = util.widget(vicious.widgets.bat, "$2$1", 61, "BAT0", {
 -- }}}
 
 -- {{{ Drives
-local fswidget = util.widget(vicious.widgets.fs, "${/ used_p}<span color=\"" ..
+fswidget = util.widget(vicious.widgets.fs, "${/ used_p}<span color=\"" ..
 beautiful.fg_faded ..  "\">r</span> ${" ..  home_dir .. " used_p}<span color=\"" ..
 beautiful.fg_faded .. "\">h</span> ${/var used_p}<span color=\"" ..
 beautiful.fg_faded .. "\">v</span>", 59, "BAT0", {
