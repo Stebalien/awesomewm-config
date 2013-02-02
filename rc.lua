@@ -360,7 +360,15 @@ for s = 1, screen.count() do
     end
 
     -- Create the wibox
-    mywibox[s] = awful.wibox({ position = "top", screen = s, height = 16, border_width = 1, border_color = "#222222", fg = "#999999" })
+    mywibox[s] = awful.wibox({
+        position = "top",
+        screen = s,
+        height = beautiful.wibox_height,
+        border_width = beautiful.wibox_border_width,
+        border_color = beautiful.wibox_border_normal,
+        fg = beautiful.wibox_fg_normal,
+        bg = beautiful.wibox_bg_normal
+    })
 
     local layout = wibox.layout.align.horizontal()
 

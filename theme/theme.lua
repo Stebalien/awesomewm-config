@@ -44,6 +44,13 @@ theme.tooltip_fg_color = "#aaaaaa"
 theme.taglist_bg_focus = "#222222"
 theme.taglist_bg_urgent = "#991000"
 
+
+theme.wibox_fg_normal = "#999999"
+theme.wibox_bg_normal = "#121212"
+theme.wibox_border_normal = "#222222"
+theme.wibox_border_width = "1"
+theme.wibox_height = "16"
+
 -- Display the taglist squares
 --theme.taglist_squares_sel   = theme_dir .. "/taglist/squarefw.png"
 --theme.taglist_squares_unsel = theme_dir .. "/taglist/squarew.png"
