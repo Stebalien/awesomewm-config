@@ -240,7 +240,7 @@ beautiful.fg_faded .. "\">v</span>", 301, {
 netwidget = util.widget(vicious.widgets.net,
     function (widget, args)
         return string.format("% 4d<span color=\"" .. beautiful.fg_faded .. "\">u </span>% 5d<span color=\"" .. beautiful.fg_faded .. "\">d</span>", args["{eth0 up_kb}"] + args["{wlan0 up_kb}"], args["{eth0 down_kb}"] + args["{wlan0 down_kb}"])
-    end, 3, {
+    end, 7, {
     icon = beautiful.icons.net_wired,
     tooltip = function()
         local essid = awful.util.pread("iwgetid --raw")
