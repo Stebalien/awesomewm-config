@@ -3,15 +3,14 @@ local pairs = pairs
 local table = table
 local inotify = require("inotify")
 
-module("patient")
+local module = {}
 
 local changed = function(w, file)
-    local events = w.inot:nbread()
-    if events then
+    local events = w.inot:read()
+    if events and #events > 0 then
         if file then
-            local wd = w.files[file]
             for i, event in ipairs(events) do
-                if event.wd == w.files[file].wd then
+                if w.watches[event.wd] == file then
                     return true
                 end
             end
@@ -23,32 +22,32 @@ local changed = function(w, file)
 end
 
 local changed_files = function(w)
-    local events = w.inot:nbread()
     local changed = {}
-    if events then
-        for i, event in ipairs(events) do
-            for file, wd in pairs(w.files) do
-                if event.wd == wd then
-                    table.insert(changed, file)
-                    break
-                end
-            end
-        end
+    for i, event in ipairs(w.inot:events()) do
+        table.insert(changed, w.watches[event.wd])
     end
     return changed
 end
 
 
-watch = function(files)
+module.watch = function(files)
     local w = {}
-    w.inot = inotify.init(true)
-    w.files = {}
+    w.inot = inotify.init{blocking = false}
+    w.watches = {}
     for file, events in pairs(files) do
-        w.files[file] = w.inot:add_watch(file, events)
+        w.watches[w.inot:addwatch(file, unpack(events))] = file
     end
     w.changed = changed
     w.changed_files = changed_files
     return w
 end
 
+for k,v in pairs(inotify) do
+    if k:sub(0,3) == 'IN_' then
+        module[k] = v
+    end
+end
 
+setmetatable(module, { __call = function(_, ...) return module.watch(...) end })
+
+return module

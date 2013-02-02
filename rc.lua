@@ -16,6 +16,7 @@ layouts = require("layouts")
 quake = require("quake")
 vicious = require("vicious")
 util = require("util")
+mail = require("mail")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -253,22 +254,12 @@ netwidget = util.widget(vicious.widgets.net,
 })
 -- }}}
 
---[[ {{{ Mail
-mailwidget = wibox.widget.textbox()
-mailwidget.bg_image = image(beautiful.icons.mail)
-mailwidget:margin({left = 10, right = 6})
-mailwidget.bg_align = "middle"
-mailwidget:buttons(awful.util.table.join(
-                        awful.button({ }, 1, function ()
-                            vicious.force({mailwidget})
-                        end
-                        )))
-
-mailwidget_t = awful.tooltip({
-    objects = {mailwidget},
-    timer_function = function()
+-- {{{ Mail
+mailwidget = util.widget(mail, "$1", 11, {
+    icon = beautiful.icons.mail,
+    tooltip = function()
         local text = ""
-        for i, m in mail.iter() do
+        for i, m in ipairs(mail.list()) do
             text = text .. string.format("<span color=\"%s\">%s</span>:\n    %s\n", beautiful.fg_highlight, util.encode(m["from"]), util.encode(m["subject"]))
         end
         if text == "" then
@@ -277,10 +268,14 @@ mailwidget_t = awful.tooltip({
             return text
         end
     end
-})
-mailwidget_t:set_timeout(60)
-vicious.register(mailwidget, mail.widget, "$1", 11)
--- }}} ]]
+});
+mailwidget:buttons(awful.util.table.join(
+                        awful.button({ }, 1, function ()
+                            vicious.force({mailwidget})
+                        end
+                        )))
+
+-- }}}
 
 -- {{{ Weather
 weatherwidget = util.widget(vicious.widgets.weather, "${tempf} ${sky}", 600, "KBOS", {
@@ -395,6 +390,8 @@ for s = 1, screen.count() do
         center_layout:add(netwidget)
         center_layout:add(sep)
         center_layout:add(volwidget)
+        center_layout:add(sep)
+        center_layout:add(mailwidget)
         center_layout:add(sep)
         center_layout:add(weatherwidget)
 

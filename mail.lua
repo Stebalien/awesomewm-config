@@ -3,10 +3,6 @@ To use this widget, change MAIL_DIR and register mail.widget with vicious. To
 reduce disk-io, this plugin will only update the unread mail count when files
 are created/moved/removed in the new mail directories under MAIL_DIR.
 
-    iter()      Returns an iterator that iterates over new mail and outputs the
-                current iteration and a table with each email's from address and
-                subject line.
-
     count()     Returns the number of new messages.
 
     widgit      The widgit worker function for vicious.
@@ -19,25 +15,25 @@ Licenced under the WTFPL.
 --]]
 
 -- {{{ imports
-local table = require "table"
-local string = require "string"
-local os = require "os"
-local io = require "io"
-local lfs = require "lfs"
-local b64 = require "base64"
+local table = require("table")
+local string = require("string")
+local os = require("os")
+local io = require("io")
+local lfs = require("lfs")
+local b64 = require("base64")
 local next = next
 local ipairs = ipairs
 local notify = naughty.notify
 local patient = require("patient")
 -- }}}
 
-module("mail")
 
 MAIL_DIR = os.getenv("HOME") .. "/.mail/"
 
 -- {{{ Setup
 local nmdirs = {}
 local nmcount = 0
+local nmlist = {}
 local iwatch
 
 for d in lfs.dir(MAIL_DIR) do
@@ -50,7 +46,7 @@ end
 
 -- {{{ Helpers
 local decode = function(val)
-    if string.find(val, "^=\?.*\?.*=") ~= nil then
+    if string.find(val, "^=?.*?.*=") ~= nil then
         return b64.decode(val)
     else
         return val
@@ -83,38 +79,55 @@ local beginWatch = function()
     local to_watch = {}
     for i,d in ipairs(nmdirs) do
         to_watch[d] = {
-            "IN_CREATE",
-            "IN_DELETE",
-            "IN_MOVED_TO",
-            "IN_MOVED_FROM"
+            patient.IN_CREATE,
+            patient.IN_MOVED_TO,
+            patient.IN_MOVED_FROM,
         }
     end
-    return patient.watch(to_watch)
+    return patient(to_watch)
 end
 -- }}}
 
 
-iter = function()
-    local cdir_iter = function(a, b) end
-    local cdir_meta
-    return function(t, i)
-        local f
-        repeat
-            f = cdir_iter(cdir_meta)
-            if f == nil then
-                i, d = next(t, i)
-                if d == nil then
-                    return
-                else
-                    cdir_iter, cdir_meta = lfs.dir(d)
-                end
-            end
-        until f ~= nil and isFile(d .. '/' .. f)
-        return i, parseFile(d .. '/' .. f)
-    end, nmdirs, nil
+local memo_list = function(l)
+    nmlist = l
 end
 
-local update_count = function()
+local do_list = function()
+    local l = {}
+    for i,d in ipairs(nmdirs) do
+        for f in lfs.dir(d) do
+            local fpath = d .. "/" .. f
+            if isFile(fpath) then
+                table.insert(l, parseFile(fpath))
+            end
+        end
+    end
+    return l
+end
+
+local memo_count = function(c)
+    if c > nmcount then
+        notify({title = "New Mail", text = "You have " .. (c - nmcount) .. " new messages."})
+    end
+    nmcount = c
+end
+
+local list = function()
+    if not iwatch then
+        iwatch = beginWatch()
+        local l = do_list()
+        memo_list(l)
+        memo_count(#l)
+    elseif nmlist == nil or iwatch:changed() then
+        local l = do_list()
+        memo_list(l)
+        memo_count(#l)
+    end
+    return nmlist
+end
+
+local do_count = function()
     local c = 0
     for i,d in ipairs(nmdirs) do
         for f in lfs.dir(d) do
@@ -123,27 +136,32 @@ local update_count = function()
             end
         end
     end
-    if c > nmcount then
-        notify({title = "New Mail", text = "You have " .. (c - nmcount) .. " new messages."})
-    end
-    nmcount = c
+    return c
 end
 
-
-
-
-count = function()
+local count = function()
     if not iwatch then
         iwatch = beginWatch()
-        update_count()
+        memo_count(do_count())
+        nmlist = nil
     elseif iwatch:changed() then
-        update_count()
+        memo_count(do_count())
+        nmlist = nil
     end
     return nmcount
 end
 
-widget = function(format, warg)
+local widget = function(format, warg)
     return {count()}
 end
+
+local module = {
+    widget = widget,
+    count = count,
+    list = list,
+}
+setmetatable(module, { __call = function(_, ...) return module.widget(...) end })
+
+return module
 
 -- vim: foldmethod=marker:filetype=lua
