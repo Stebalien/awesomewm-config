@@ -225,7 +225,7 @@ batwidget  = util.widget(vicious.widgets.bat, "$2$1", 61, "BAT0", {
 fswidget = util.widget(vicious.widgets.fs, "${/ used_p}<span color=\"" ..
 beautiful.fg_faded ..  "\">r</span> ${" ..  home_dir .. " used_p}<span color=\"" ..
 beautiful.fg_faded .. "\">h</span> ${/var used_p}<span color=\"" ..
-beautiful.fg_faded .. "\">v</span>", 59, "BAT0", {
+beautiful.fg_faded .. "\">v</span>", 301, {
     icon = beautiful.icons.fs_02,
     tooltip = function()
         local text = awful.util.pread("df -lh -x tmpfs -x devtmpfs -x rootfs")
