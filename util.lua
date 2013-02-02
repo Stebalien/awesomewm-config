@@ -15,6 +15,10 @@ return {
         end
         vicious.register(w, ...)
 
+        local update = function()
+            vicious.force(w)
+        end
+
         if options.icon then
             local t = w
             local i = wibox.layout.margin(wibox.widget.imagebox(options.icon))
@@ -34,6 +38,7 @@ return {
             end
         end
 
+        w.update = update
         return w
     end,
     encode = function(s)
